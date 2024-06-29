@@ -1,29 +1,22 @@
 #  Explore Kubernetes Cluster 
 
 
-Explore and Verify Kubernetes ( AKS )
+Explore and Verify Kubernetes ( DO )
 # Step 1 
 
-Access Azure Cloud Shell and Connect to AKS
+1. Access hosted Linux System with your assigned username 
+2. Add your assigned kubeconfig.yaml to .kube/config 
 
-- Initiate Azure Cloud Shell ( you may be asked to create storage account when you run Azure Cloud Shell for First time, accept the default)
-
-- Select Bash if prompted 
-
-- Run the following command on Azure Cloud Shell
 
 ```sh
-User@Azure#> az account set --subscription $(az account list | grep id | awk '{print $2}'  | sed 's/"//g' | sed 's/,//g')
 
-User@Azure#> az aks get-credentials --resource-group aks_rg --name aks_lab
+User@vmXXX#> cat .kube/config 
 
-User@Azure#> cat .kube/config 
+User@vmXXX#> kubectl get nodes 
 
-User@Azure#> kubectl get nodes 
+User@vmXXX#> kubectl get nodes -o wide
 
-User@Azure#> kubectl get nodes -o wide
-
-User@Azure#> kubectl describe node <node_name>
+User@vmXXX#> kubectl describe node <node_name>
 
 ```
 
@@ -31,12 +24,13 @@ User@Azure#> kubectl describe node <node_name>
 
 Open a SSH connection to worker node
  - replace node_name with your first worker node name 
+
 ```sh
-User@Azure#> kubectl get nodes 
+User@vmXXX#> kubectl get nodes 
 
-User@Azure#> kubectl debug node/<node_name> -it --image=mcr.microsoft.com/aks/fundamental/base-ubuntu:v0.0.11
+User@vmXXX#> kubectl debug node/<node_name> -it --image=mcr.microsoft.com/aks/fundamental/base-ubuntu:v0.0.11
 
-root@aks-agentpool-25073747-0:/# chroot /host
+root@inst1-aqhd0gso1-rsxhz:/# chroot /host
 
 # crictl ps
 
@@ -58,13 +52,13 @@ root@aks-agentpool-25073747-0:/# chroot /host
 
 # exit
 
-root@aks-agentpool-25073747-0:/# exit
+root@inst1-aqhd0gso1-rsxhz:/#  exit
 
-User@Azure#> kubectl get pods --field-selector status.phase!=Running 
+User@vmXXX#> kubectl get pods --field-selector status.phase!=Running 
 NAME                                           READY   STATUS      RESTARTS   AGE
 node-debugger-XXX                              0/1     Completed   0          13m
 
-User@Azure#> kubectl  delete pod node-debugger-XXX
+User@vmXXX#> kubectl  delete pod node-debugger-XXX
 
 ```
 
@@ -73,35 +67,35 @@ User@Azure#> kubectl  delete pod node-debugger-XXX
 Explore all running Containers/Pods and Configurations
 ```sh
 
-User@Azure#>  kubectl get ns 
+User@vmXXX#>  kubectl get ns 
 
-User@Azure#>  kubectl get po -n kube-system
+User@vmXXX#>  kubectl get po -n kube-system
 
-User@Azure#>  kubectl get service 
+User@vmXXX#>  kubectl get service 
 
-User@Azure#>  kubectl get deployments
+User@vmXXX#>  kubectl get deployments
 
-User@Azure#>  kubectl get daemonsets
+User@vmXXX#>  kubectl get daemonsets
 
-User@Azure#>  kubectl get replicasets 
+User@vmXXX#>  kubectl get replicasets 
 
-User@Azure#>  kubectl get statefulsets 
+User@vmXXX#>  kubectl get statefulsets 
 
-User@Azure#>  kubectl get configmap 
+User@vmXXX#>  kubectl get configmap 
 
-User@Azure#>  kubectl get secret 
+User@vmXXX#>  kubectl get secret 
 
-User@Azure#>  kubectl get storageclass 
+User@vmXXX#>  kubectl get storageclass 
 
-User@Azure#>  kubectl get pv
+User@vmXXX#>  kubectl get pv
 
-User@Azure#>  kubectl get pvc
+User@vmXXX#>  kubectl get pvc
 
-User@Azure#>  kubectl get cronjobs
+User@vmXXX#>  kubectl get cronjobs
 
-User@Azure#>  kubectl get jobs
+User@vmXXX#>  kubectl get jobs
 
-User@Azure#>  kubectl get endpoints
+User@vmXXX#>  kubectl get endpoints
 
 ```
 
@@ -109,13 +103,13 @@ User@Azure#>  kubectl get endpoints
 
 Deploy Simple App to Kubernetes
 ```sh
-User@Azure#>  kubectl get deployments
+User@vmXXX#>  kubectl get deployments
 
-User@Azure#>  kubectl get service 
+User@vmXXX#>  kubectl get service 
 
-User@Azure#>  kubectl apply -f voteapp.yaml 
+User@vmXXX#>  kubectl apply -f voteapp.yaml 
 
-User@Azure#>  kubectl get service voteapp-frontend
+User@vmXXX#>  kubectl get service voteapp-frontend
 ** Browse to the external IP address to verify app is running
 
 ```
@@ -125,13 +119,13 @@ User@Azure#>  kubectl get service voteapp-frontend
 Remove previously deployed App and verify there is no Service, Pod and Deployment defined 
 ```sh 
 
-User@Azure#>  kubectl delete -f voteapp.yaml 
+User@vmXXX#>  kubectl delete -f voteapp.yaml 
 
-User@Azure#>  kubectl get deployments
+User@vmXXX#>  kubectl get deployments
 
-User@Azure#>  kubectl get svc
+User@vmXXX#>  kubectl get svc
 
-User@Azure#>  kubectl get po
+User@vmXXX#>  kubectl get po
 
 ```
 
