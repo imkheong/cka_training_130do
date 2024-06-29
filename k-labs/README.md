@@ -17,7 +17,9 @@ This repository contains all Lab section.
 | stu6     | -nil- | 52.148.90.27   | vm006.cognitoz.my | /home/stu6/kubeconfig.yaml |
 
 >> Password will given during session
+
 >> You are required to change password upon first login 
+
 >> Remember your password 
 
 2. How to connect?
