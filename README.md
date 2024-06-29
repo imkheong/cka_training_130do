@@ -4,7 +4,7 @@ Kube Training Assets
 - This Hub contains the Labs files needed for CKA training
 
 ### WARNING  
-| This is not a CKA EXAM prep material 
+| This is not a CKA EXAM prep material, this is training material that can help you to FACE the exam!! 
 
 
 # END
