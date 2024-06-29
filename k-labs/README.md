@@ -16,11 +16,11 @@ This repository contains all Lab section.
 | stu5     | -nil- | 20.188.101.85  | vm005.cognitoz.my | /home/stu5/kubeconfig.yaml |
 | stu6     | -nil- | 52.148.90.27   | vm006.cognitoz.my | /home/stu6/kubeconfig.yaml |
 
->> Password will given during session
+    >> Password will given during session
 
->> You are required to change password upon first login 
+    >> You are required to change password upon first login 
 
->> Remember your password 
+    >> Remember your password 
 
 2. How to connect?
 * Method 1 
