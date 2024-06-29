@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kubia-pod-init
+  labels: 
+    app: kubia-pod-init
+spec:
+  initContainers:
+  - name: sleepy1
+    image: alpine
+    command: ['sleep', '20']
+    #command: ['exit', '25']
+  - name: sleepy2
+    image: alpine
+    command: ['sleep', '40']
+    #command: ['exit', '25']
+  - name: sleepy3
+    image: alpine
+    command: ['sleep', '60']
+    #command: ['exit', '25']
+  containers:
+  - image: stv707/kubia:v14
+    name: kubia-pod-init
+    ports:
+    - containerPort: 8080
+      protocol: TCP
