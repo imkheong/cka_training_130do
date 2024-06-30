@@ -69,7 +69,14 @@ kubectl exec -it box2 -- sh
 # exit 
 
 ```
+# Step 5
+Delete/Remove pods
 
+```sh
+
+** Delete all pod to prepare for next lab
+
+```
 
 
 END
