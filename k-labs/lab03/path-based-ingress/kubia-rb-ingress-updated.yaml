@@ -9,8 +9,8 @@ metadata:
    #kubernetes.io/ingress.class: addon-http-application-routing
 spec:
   rules:
-    # Change to X to your student ID ( number ) 
-  - host: rbstuX.cognitoz.my
+    # Change to x to your student ID ( number ) 
+  - host: rbstux.cognitoz.my
     http:
       paths:
       - path: /blue

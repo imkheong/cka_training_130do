@@ -119,15 +119,16 @@ kubectl get svc -n default -l app.kubernetes.io/name=ingress-nginx
 ```
 
 * Pass the Public IP to Steven, so Steven will create  DNS entry as per table below
+* DO NOT PROCEED until Public DNS entry is created!!! 
 
-PIP    | HostDNS1 | HostDNS2 |     
-|-----------|------------|------------|
-| XX.XX.XX.XX | app1stu1.cognitoz.my | app2stu1.cognitoz.my | 
-| XX.XX.XX.XX | app1stu2.cognitoz.my | app2stu2.cognitoz.my | 
-| XX.XX.XX.XX | app1stu3.cognitoz.my | app2stu3.cognitoz.my | 
-| XX.XX.XX.XX | app1stu4.cognitoz.my | app2stu4.cognitoz.my | 
-| XX.XX.XX.XX | app1stu5.cognitoz.my | app2stu5.cognitoz.my | 
-| XX.XX.XX.XX | app1stu6.cognitoz.my | app2stu6.cognitoz.my | 
+     PIP    | HostDNS1   | HostDNS2   |   HostDNS3 | 
+|-----------|------------|------------|------------|
+| XX.XX.XX.XX | app1stu1.cognitoz.my | app2stu1.cognitoz.my | rbstu1.cognitoz.my |
+| XX.XX.XX.XX | app1stu2.cognitoz.my | app2stu2.cognitoz.my | rbstu1.cognitoz.my |
+| XX.XX.XX.XX | app1stu3.cognitoz.my | app2stu3.cognitoz.my | rbstu1.cognitoz.my |
+| XX.XX.XX.XX | app1stu4.cognitoz.my | app2stu4.cognitoz.my | rbstu1.cognitoz.my |
+| XX.XX.XX.XX | app1stu5.cognitoz.my | app2stu5.cognitoz.my | rbstu1.cognitoz.my |
+| XX.XX.XX.XX | app1stu6.cognitoz.my | app2stu6.cognitoz.my | rbstu1.cognitoz.my |
 
 # Step 2
 Deploy Ingress based Service ( dns based )
@@ -155,7 +156,7 @@ kubectl get svc -n app1
 ```
 # Step 3 
 * Edit the app1-ingress.yaml and add your dns entry 
-* Change this entry : - host: app1stuX.cognitoz.org  ( X represent your student number )
+* Change this entry : - host: app1stux.cognitoz.my  ( x represent your student number )
 
 # Step 4 
 ```sh 
@@ -185,7 +186,7 @@ kubectl get svc -n app2
 ```
 # Step 6 
 * Edit the app1-ingress.yaml and add your dns entry 
-* Change this entry : - host: app2stuX.cognitoz.org  ( X represent your student number )
+* Change this entry : - host: app2stux.cognitoz.my  ( x represent your student number )
 
 # Step 7 
 ```sh 
@@ -211,8 +212,7 @@ kubectl get ingress -n app2
 * Make sure you are in path-based-ingress directory  ( cd ../../path-based-ingress)
 
 ```sh
-
-kubectl apply -f redblue-namespace.yaml
+kubectl apply -f  redblue-namespace.yaml
 
 kubectl apply -f  kubia-red-svc.yaml
 
@@ -221,9 +221,13 @@ kubectl apply -f  kubia-red-rc.yaml
 kubectl apply -f  kubia-blue-svc.yaml
 
 kubectl apply -f  kubia-blue-rc.yaml
+```
+# Step 1A
+* Edit the kubia-rb-ingress-updated.yaml and add your dns entry 
+* Change this entry : - host: rbstux.cognitoz.my  ( x represent your student number )
 
-kubectl apply -f  kubia-rb-ingress.yaml
-
+```sh
+kubectl apply -f  kubia-rb-ingress-updated.yaml
 ```
 
 # Step 2
@@ -233,8 +237,8 @@ kubectl get all -n redblue
 kubectl get ingress -n redblue
 
 kubectl describe  ingress kubiaredblue -n redblue
-
-*Browse to host address with /blue and /red to view the page
 ```
+* Browse to host address with /blue and /red to view the page
+
 
 END
