@@ -130,6 +130,22 @@ kubectl get svc -n default -l app.kubernetes.io/name=ingress-nginx
 | XX.XX.XX.XX | app1stu5.cognitoz.my | app2stu5.cognitoz.my | rbstu5.cognitoz.my |
 | XX.XX.XX.XX | app1stu6.cognitoz.my | app2stu6.cognitoz.my | rbstu6.cognitoz.my |
 
+* run the following to verify the dns entry created 
+* replace X with your student number
+
+```sh 
+dig app1stuX.cognitoz.my 
+```
+```sh 
+dig app2stuX.cognitoz.my 
+```
+```sh 
+dig rbstuX.cognitoz.my 
+```
+
+>> Only Proceed when dig status is NOERROR
+
+
 # Step 2
 Deploy Ingress based Service ( dns based )
 * You will deploy two app named app1 and app2 
