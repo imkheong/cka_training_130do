@@ -17,4 +17,4 @@ spec:
       volumes:
         - name: my-data
           persistentVolumeClaim:
-            claimName: azure-disk-15g
+            claimName: azure-disk-4g
