@@ -101,32 +101,6 @@ kubectl get rc
 
 # Lab04C
 # Step
-Using PersistentVolumes and PersistentVolumeClaims <br>
-You will create PersistentVolumes and PersistentVolumeClaims <br>
-Bring up 2 pod that uses 2 different claim (webX-pod-pvc-X.yaml) <br>
-
-```sh
-kubectl get pv
-kubectl create -f pv-nfs-1.yaml
-kubectl get pv
-kubectl create -f pv-nfs-2.yaml
-kubectl get pv
-
-
-kubectl get pvc
-kubectl create -f pvc-1.yaml
-kubectl get pvc
-kubectl create -f pvc-2.yaml
-kubectl get pvc
-
-kubectl create -f web1-pod-pvc-1.yaml
-
-kubectl create -f web2-pod-pvc-2.yaml
-
-```
-
-# Lab04D
-# Step
 Using Dynamic provisioning of PersistentVolumes<br>
 In order to use Dynamic provisioning, you need to use a provisioner <br>
 Cloud based Kubernetes provides this<br>
