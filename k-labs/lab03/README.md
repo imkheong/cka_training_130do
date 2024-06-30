@@ -124,11 +124,11 @@ kubectl get svc -n default -l app.kubernetes.io/name=ingress-nginx
 |   PIP    | HostDNS1   | HostDNS2   |   HostDNS3 | 
 |-----------|------------|------------|------------|
 | XX.XX.XX.XX | app1stu1.cognitoz.my | app2stu1.cognitoz.my | rbstu1.cognitoz.my |
-| XX.XX.XX.XX | app1stu2.cognitoz.my | app2stu2.cognitoz.my | rbstu1.cognitoz.my |
-| XX.XX.XX.XX | app1stu3.cognitoz.my | app2stu3.cognitoz.my | rbstu1.cognitoz.my |
-| XX.XX.XX.XX | app1stu4.cognitoz.my | app2stu4.cognitoz.my | rbstu1.cognitoz.my |
-| XX.XX.XX.XX | app1stu5.cognitoz.my | app2stu5.cognitoz.my | rbstu1.cognitoz.my |
-| XX.XX.XX.XX | app1stu6.cognitoz.my | app2stu6.cognitoz.my | rbstu1.cognitoz.my |
+| XX.XX.XX.XX | app1stu2.cognitoz.my | app2stu2.cognitoz.my | rbstu2.cognitoz.my |
+| XX.XX.XX.XX | app1stu3.cognitoz.my | app2stu3.cognitoz.my | rbstu3.cognitoz.my |
+| XX.XX.XX.XX | app1stu4.cognitoz.my | app2stu4.cognitoz.my | rbstu4.cognitoz.my |
+| XX.XX.XX.XX | app1stu5.cognitoz.my | app2stu5.cognitoz.my | rbstu5.cognitoz.my |
+| XX.XX.XX.XX | app1stu6.cognitoz.my | app2stu6.cognitoz.my | rbstu6.cognitoz.my |
 
 # Step 2
 Deploy Ingress based Service ( dns based )
