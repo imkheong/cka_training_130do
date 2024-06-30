@@ -5,12 +5,12 @@ metadata:
   namespace: redblue
   annotations:
    #Comment the nginx class to use Azure http routing , uncomment addon-http-application-routing 
-   #kubernetes.io/ingress.class: "nginx"
-   kubernetes.io/ingress.class: addon-http-application-routing
+   kubernetes.io/ingress.class: "nginx"
+   #kubernetes.io/ingress.class: addon-http-application-routing
 spec:
   rules:
-    # Change to rb.<azure_dns> 
-  - host: rb.03390d51bfc64fa188d4.eastasia.aksapp.io
+    # Change to X to your student ID ( number ) 
+  - host: rbstuX.cognitoz.my
     http:
       paths:
       - path: /blue
