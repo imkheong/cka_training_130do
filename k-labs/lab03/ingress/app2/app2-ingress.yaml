@@ -9,8 +9,8 @@ metadata:
    kubernetes.io/ingress.class: addon-http-application-routing
 spec:
   rules:
-    # Change to app2.<azure_dns> 
-  - host: app2.03390d51bfc64fa188d4.eastasia.aksapp.io
+    # Change the X to your student number 
+  - host: app2stuX.cognitoz.my
 
     http:
       paths:

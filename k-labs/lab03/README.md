@@ -85,19 +85,49 @@ kubectl get svc
 **Browse the External Ip of frontend-vote
 ```
 
+>> for next lab(ingress) to work, you might need to delete the LoadBalancer Service to release PIP
+
 
 # Lab03D
 # Step 1
 
-* Verify Ingress Controller and Azure DNS entries 
+* Install Helm (if not installed): 
 ```sh
-kubectl get pod -A  | grep ingress
-*Under Azure, you will see addon-http-application-routing-nginx-ingress-controller ( cloud provided )
-
-az aks show --resource-group aks_rg --name aks_lab  --query addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName -o table
-*This is your Public DNS address
-
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 ```
+>> we will learn HELM in one of the topic, for now, just follow along
+
+* Add the Ingress NGINX Helm repository:
+```sh
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+```
+
+* Deploy the Ingress Controller:
+```sh
+helm install nginx-ingress ingress-nginx/ingress-nginx
+```
+
+* Verify the Installation:
+```sh
+kubectl get pods -n default -l app.kubernetes.io/name=ingress-nginx
+```
+
+* Get the Load Balancer IP (wait until you get PIP) : 
+```sh
+kubectl get svc -n default -l app.kubernetes.io/name=ingress-nginx
+```
+
+* Pass the Public IP to Steven, so Steven will create  DNS entry as per table below
+
+PIP    | HostDNS1 | HostDNS2 |     
+|-----------|------------|------------|
+| XX.XX.XX.XX | app1stu1.cognitoz.my | app2stu1.cognitoz.my | 
+| XX.XX.XX.XX | app1stu2.cognitoz.my | app2stu2.cognitoz.my | 
+| XX.XX.XX.XX | app1stu3.cognitoz.my | app2stu3.cognitoz.my | 
+| XX.XX.XX.XX | app1stu4.cognitoz.my | app2stu4.cognitoz.my | 
+| XX.XX.XX.XX | app1stu5.cognitoz.my | app2stu5.cognitoz.my | 
+| XX.XX.XX.XX | app1stu6.cognitoz.my | app2stu6.cognitoz.my | 
 
 # Step 2
 Deploy Ingress based Service ( dns based )
@@ -125,7 +155,7 @@ kubectl get svc -n app1
 ```
 # Step 3 
 * Edit the app1-ingress.yaml and add your dns entry 
-* Change this entry : - host: app1.cognitoz.org  to - host: app1.<azure_dns>
+* Change this entry : - host: app1stuX.cognitoz.org  ( X represent your student number )
 
 # Step 4 
 ```sh 
@@ -154,8 +184,8 @@ kubectl get pod -n app2
 kubectl get svc -n app2
 ```
 # Step 6 
-* Edit the app2-ingress.yaml and add your dns entry 
-* Change this entry : - host: app2.cognitoz.org  to - host: app2.<azure_dns>
+* Edit the app1-ingress.yaml and add your dns entry 
+* Change this entry : - host: app2stuX.cognitoz.org  ( X represent your student number )
 
 # Step 7 
 ```sh 
