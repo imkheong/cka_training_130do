@@ -121,7 +121,7 @@ kubectl get svc -n default -l app.kubernetes.io/name=ingress-nginx
 * Pass the Public IP to Steven, so Steven will create  DNS entry as per table below
 * DO NOT PROCEED until Public DNS entry is created!!! 
 
-     PIP    | HostDNS1   | HostDNS2   |   HostDNS3 | 
+|   PIP    | HostDNS1   | HostDNS2   |   HostDNS3 | 
 |-----------|------------|------------|------------|
 | XX.XX.XX.XX | app1stu1.cognitoz.my | app2stu1.cognitoz.my | rbstu1.cognitoz.my |
 | XX.XX.XX.XX | app1stu2.cognitoz.my | app2stu2.cognitoz.my | rbstu1.cognitoz.my |
