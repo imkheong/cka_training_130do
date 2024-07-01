@@ -38,8 +38,6 @@ kubectl get pod
 
 kubectl get pod --selector=app=kubiads -o wide
 
-kubectl drain <NODE2> --ignore-daemonsets
-
 kubectl get nodes
 
 kubectl get pod --selector=app=kubiads -o wide
@@ -49,8 +47,6 @@ kubectl get pod --field-selector=spec.nodeName=<NODE2> -A
 kubectl apply -f kubia-ds-2.yaml
 
 kubectl get pod --selector=app=kubiads2 -o wide
-
-kubectl uncordon <NODE2>
 
 kubectl get  nodes
 
