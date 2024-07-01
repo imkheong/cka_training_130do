@@ -38,19 +38,19 @@ kubectl get pod
 
 kubectl get pod --selector=app=kubiads -o wide
 
-kubectl drain aks-XXXX-XXXX-2 --ignore-daemonsets
+kubectl drain <NODE2> --ignore-daemonsets
 
 kubectl get nodes
 
 kubectl get pod --selector=app=kubiads -o wide
 
-kubectl get pod --field-selector=spec.nodeName=aks-agentpool-25073747-2 -A
+kubectl get pod --field-selector=spec.nodeName=<NODE2> -A
 
 kubectl apply -f kubia-ds-2.yaml
 
 kubectl get pod --selector=app=kubiads2 -o wide
 
-kubectl uncordon aks-agentpool-25073747-2
+kubectl uncordon <NODE2>
 
 kubectl get  nodes
 
@@ -67,9 +67,9 @@ kubectl get ds
 ```sh
 kubectl get node
 
-kubectl label node  aks-XXXX-XXXX-1 disk=ssd
+kubectl label node  <NODE1> disk=ssd
 
-kubectl label node  aks-XXXX-XXXX-2 disk=ssd
+kubectl label node  <NODE2> disk=ssd
 
 kubectl create -f ssd-monitor-daemonset.yaml
 
@@ -77,7 +77,7 @@ kubectl get ds
 
 kubectl get pod --selector=app=ssd-monitor -o wide
 
-kubectl label node aks-XXXX-XXXX-2 disk=hdd --overwrite
+kubectl label node <NODE2> disk=hdd --overwrite
 
 kubectl get ds
 
@@ -87,6 +87,9 @@ kubectl label node  aks-XXXX-XXXX-0 disk=ssd
 ```
 
 # Step 2
+
+|| WARNING: Do not perform this if not in Azure
+
 ```sh 
 kubectl get nodes
 
@@ -125,11 +128,21 @@ kubectl label node aks-agentpool-25073747-3 disk-
 kubectl get pod --selector=app=ssd-monitor -o wide
 
 kubectl get ds
+```
+
+
+# Step 3 
+```sh
+
+kubectl get nodes -L disk
+
+kubectl label node <NODE1> disk-
+
+kubectl label node <NODE2> disk-
 
 kubectl delete -f kubia-ds-1.yaml
 
 kubectl delete -f kubia-ds-2.yaml
 
-kubectl delete -f ssd-monitor-daemonset.yaml
-
+kubectl delete -f ssd-monitor-daemonset.yaml 
 ```
