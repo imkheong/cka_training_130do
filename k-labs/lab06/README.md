@@ -106,6 +106,8 @@ kubectl config view
 cat kubepython.py 
 
 pip install kubernetes 
+* if pip is not available, install it
+* sudo apt install python3-pip
 
 python kubepython.py
 

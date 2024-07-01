@@ -4,7 +4,7 @@ metadata:
   name: downward-no-api-env
 spec:
   containers:
-  - image: luksa/kubia
+  - image: stv707/kubia:v14
     name: kubia
     ports:
     - containerPort: 8080
