@@ -2,7 +2,9 @@
 * Node Prep 
 
 # Step 1
-* Increase node count to 3 
+* Increase node count to 3  ( SKIP This if not ON Azure AKS )
+
+>> WARNING: DO NOT PERFORM THIS IF NOT IN AZURE AKS Sub System!! ( Skip to Step 2 )
 
 ```sh 
 
