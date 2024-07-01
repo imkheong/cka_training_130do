@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubia-node-affinity
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kubia-affinity
+  template:
+    metadata:
+      labels:
+        app: kubia-affinity
+    spec:
+      containers:
+      - name: kubia
+        image: stv707/kubia:v14
+        ports:
+        - containerPort: 8080
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - NODE2
+                #Update the NODE2 with your actual nodename of node 2 
