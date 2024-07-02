@@ -34,9 +34,9 @@ kubectl delete -f downward-api-env.yaml
 
 kubectl create -f downward-api-volume.yaml
 
-kubectl exec downward -- cat /etc/downward/labels
-kubectl exec downward -- cat /etc/downward/annotations
-kubectl exec -it downward -- sh
+kubectl exec downward-volume -- cat /etc/downward/labels
+kubectl exec  downward-volume -- cat /etc/downward/annotations
+kubectl exec -it  downward-volume -- sh
 
 # cd /etc/downward/
 # ls -l
