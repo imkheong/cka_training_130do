@@ -33,8 +33,17 @@ kubectl describe nodes <request_pod_running_node>
 
 kubectl describe po requests-pod-5
 
-kubectl get pods 
+kubectl get pods -o wide
+* identify the node the request-pod-4 is running on
+
+kubectl describe nodes <request_pod_running_node>
+* where request-pod-4 is running 
+
 kubectl delete po requests-pod-4 --force
+
+kubectl describe nodes <request_pod_running_node>
+* where request-pod-4 was running 
+
 kubectl get pods 
 
 kubectl delete pod requests-pod-2 requests-pod-3 requests-pod-5 requests-pod  --force 
