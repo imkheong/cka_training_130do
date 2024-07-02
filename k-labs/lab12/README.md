@@ -75,7 +75,7 @@ kubectl apply -f limits.yaml
 
 kubectl get limitranges -n dev 
 
-kubectl describe limitranges example -n dev 
+kubectl describe limitranges devlimit -n dev 
 
 kubectl apply -f kubia-manual.yaml
 kubectl get pod
