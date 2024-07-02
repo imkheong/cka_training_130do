@@ -9,5 +9,5 @@ spec:
     name: main
     resources:
       requests:
-        cpu: 800m
+        cpu: 2
         memory: 20Mi

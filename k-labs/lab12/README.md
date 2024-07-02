@@ -18,15 +18,18 @@ kubectl get pod -o wide requests-pod
 
 kubectl describe nodes <request_pod_running_node>
 
-kubectl run requests-pod-2 --image=busybox --restart Never --requests='cpu=800m,memory=20Mi' -- dd if=/dev/zero of=/dev/null 
+kubectl apply -f requests-pod-2.yaml 
 
-kubectl run requests-pod-3 --image=busybox --restart Never --requests='cpu=1,memory=20Mi' -- dd if=/dev/zero of=/dev/null 
+kubectl apply -f requests-pod-3.yaml 
 
-kubectl run requests-pod-4 --image=busybox --restart Never --requests='cpu=1,memory=20Mi' -- dd if=/dev/zero of=/dev/null 
+kubectl apply -f requests-pod-4.yaml 
 
-kubectl run requests-pod-5 --image=busybox --restart Never --requests='cpu=1,memory=20Mi' -- dd if=/dev/zero of=/dev/null 
+kubectl apply -f requests-pod-5.yaml 
 
+kubectl get pod -o wide
+* identify the node the request-pod(2-5) is running on
 
+kubectl describe nodes <request_pod_running_node>
 
 kubectl describe po requests-pod-5
 
