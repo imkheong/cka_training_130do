@@ -176,9 +176,9 @@ To sign in, use a web browser to open the page https://microsoft.com/devicelogin
 
 * update Access
 
-# droot@vm001:~$ sudo chown -R jedi:jedi  ~jedi/* 
+# droot@vm001:~$ sudo bash -c 'chown -R jedi:jedi /home/jedi/*'
 
-# droot@vm001:~$ sudo chown -R sith:sith  ~sith/*
+# droot@vm001:~$ sudo bash -c 'chown -R jedi:jedi /home/sith/*'
 
 # droot@vm001:~$ sudo su - jedi
 
@@ -244,5 +244,17 @@ To sign in, use a web browser to open the page https://microsoft.com/devicelogin
 # exit
 
 ```
+
+# FINAL STEP 
+
+>> WARNING: Delete user jedi and sith from linux host, linux host are exposed to internet!! 
+
+```sh 
+
+sudo userdel -r jedi 
+
+sudo userdel -r sith 
+```
+
 
 END
