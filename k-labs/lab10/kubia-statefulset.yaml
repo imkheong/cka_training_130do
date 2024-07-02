@@ -31,4 +31,5 @@ spec:
           storage: 1Gi
       accessModes:
       - ReadWriteOnce
-      storageClassName: "default"
+      #for Digital Ocean, disable, if Azure, enable SC
+      #storageClassName: "default"

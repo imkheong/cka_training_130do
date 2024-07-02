@@ -75,6 +75,9 @@ kubectl describe pod kubia-manual
 # Step 1
  * Configure vm001 VM to access Kubernetes Cluster ( install az cli & kubectl )
  * Perform this on Azure Cloud shell ( private key to access vm001 only available on Azure Cloud Shell )
+
+ >> WARNING: SKIP THIS IF YOU ARE NOT USING AZURE AKS!!! ( SKIP to Step 1A)
+
 ```sh 
 
 # @Azure:~$  VMIP=$(az vm show -d -g vm001_rg -n vm001 --query "publicIps" -o tsv)
@@ -106,6 +109,10 @@ To sign in, use a web browser to open the page https://microsoft.com/devicelogin
 
 # droot@vm001:~$  az aks get-credentials --resource-group aks_rg --name aks_lab
 
+```
+
+# Step 1A
+```sh 
 # droot@vm001:~$ kubectl cluster-info 
 * You should receive Cluster Info Output
 
@@ -123,16 +130,10 @@ To sign in, use a web browser to open the page https://microsoft.com/devicelogin
  * Create namespace for user Jedi and Sith and Apply Resource Quota 
 
 ```sh
-
-** Clone Github
-# droot@vm001:~$ git clone https://github.com/stv707/kubernetes_training_2.git
-
-# droot@vm001:~$ cd kubernetes_training_2/k-labs/lab12/
-
 ** Create Namespace 
-# droot@vm001:~/kubernetes_training_2/k-labs/lab12$ kubectl create namespace jedi
+# droot@vm001:~/$ kubectl create namespace jedi
 
-# droot@vm001:~/kubernetes_training_2/k-labs/lab12$ kubectl create namespace sith
+# droot@vm001:~/$ kubectl create namespace sith
 
 
 * run create_user_namespace.sh to generate kubeconfig 
@@ -174,6 +175,7 @@ To sign in, use a web browser to open the page https://microsoft.com/devicelogin
 # jedi@vm001:~$ source .bashrc
 
 # jedi@vm001:~$ kubectl apply -f quota_test_jedi.yaml
+
 *check the pods / deployments 
 
 # jedi@vm001:~$ kubectl describe resourcequotas jedi-quota
@@ -190,6 +192,7 @@ To sign in, use a web browser to open the page https://microsoft.com/devicelogin
 # sith@vm001:~$  source .bashrc
 
 # sith@vm001:~$  kubectl apply -f quota_test_sith.yaml
+
 *check the pods / deployments 
 
 # sith@vm001:~$ kubectl describe resourcequotas sith-quota
