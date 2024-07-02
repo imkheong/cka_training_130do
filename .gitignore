@@ -1,1 +1,8 @@
+# Ignore tmpdata directory and its contents
 tmpdata
+
+# Ignore jedi_kubeconfig file at any directory level
+**/jedi_kubeconfig
+
+# Ignore sith_kubeconfig file at any directory level
+**/sith_kubeconfig
