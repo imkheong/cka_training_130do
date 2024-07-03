@@ -173,7 +173,7 @@ kubectl create rolebinding jedidev-binding-jedi --role=jedi-dev --user=jedi
 
 kubectl config set-credentials jedi --client-key=jedi.key --client-certificate=jedi.crt --embed-certs=true
 
-kubectl config set-context jedi --cluster=kubernetes --user=jedi
+kubectl config set-context jedi --cluster=(REPLACE WITH CLUSTER NAME)--user=jedi
 
 kubectl config use-context jedi
 
