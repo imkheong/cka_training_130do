@@ -149,7 +149,7 @@ jedi@vm000:~$ kubectl config use-context jedi
 jedi@vm000:~$ kubectl get pods 
 * you will be forbidden
 
-jedi@vm000:~$ kubectl get pods -n jedi 
+jedi@vm000:~$ kubectl get pods -n jedins
 
 ```
 
