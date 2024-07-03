@@ -4,4 +4,4 @@ metadata:
   name: jedi-quota
 spec:
   hard:
-    pods: "10"
+    pods: "2"

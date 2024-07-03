@@ -86,13 +86,15 @@ kubectl describe pod kubia-manual
 
 # Step 2A
 
-* Create User Called jedi in your Linux system 
+* Create User Called jedi in your Linux system and Namespace called jedins
 
 ```sh 
 
 sudo adduser jedi
 * use any password and leave all other fields blank 
 
+
+kubectl create namespace jedi
 ```
 
 ```sh 
@@ -149,11 +151,9 @@ jedi@vm000:~$ kubectl get pods -n jedi
 
 
 # Step 2B ( UPDATE )
- * Create namespace for user Jedi  Apply Resource Quota 
+ * Apply jedi Resource Quota 
 
 ```sh
-** Create Namespace 
-# stuX@vm001:~/$ kubectl create namespace jedi
 
 * create hard limit quota
 # stuX@vm001:~$ kubectl apply -f quota-pod_jedi.yaml --namespace=jedins 
