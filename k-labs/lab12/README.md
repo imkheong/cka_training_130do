@@ -138,7 +138,55 @@ To sign in, use a web browser to open the page https://microsoft.com/devicelogin
 
 ```
 
-# Step 2
+# Step 2A
+```sh 
+sudo bash -c 'mkdir /home/jedi/.kube/'
+
+sudo bash -c 'cat /home/stux/.kube/config > /home/jedi/.kube/config'
+
+sudo cp kcsr.yaml /home/jedi/
+
+sudo chown jedi:jedi /home/jedi/kcsr.yaml 
+
+sudo su - jedi 
+
+kubectl cluster-info
+
+openssl genrsa -out jedi.key 2048
+
+openssl req -new -key jedi.key -out jedi.csr -subj "/CN=jedi"
+
+cat jedi.csr | base64 | tr -d "\n"
+* copy the base64 into REPLACE ME in kcsr.yaml
+
+kubectl apply -f kcsr.yaml 
+
+kubectl get csr
+
+kubectl certificate approve jedi
+
+kubectl get csr jedi -o jsonpath='{.status.certificate}'| base64 -d > jedi.crt
+
+kubectl create role jedidev --namespace=jedi --verb=create --verb=get --verb=list --verb=update --verb=delete --resource=pods
+
+kubectl create rolebinding jedidev-binding-jedi --role=jedi-dev --user=jedi
+
+kubectl config set-credentials jedi --client-key=jedi.key --client-certificate=jedi.crt --embed-certs=true
+
+kubectl config set-context jedi --cluster=kubernetes --user=jedi
+
+kubectl config use-context jedi
+
+```
+
+
+
+
+
+
+
+
+# Step 2 ( UPDATE : PROBLEM )
  * Create namespace for user Jedi and Sith and Apply Resource Quota 
 
 ```sh

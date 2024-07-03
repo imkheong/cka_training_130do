@@ -1,107 +1,99 @@
 #!/bin/bash
 
-namespace=$1
+# Variables
+USERNAME=jedi
+NAMESPACE=jedi
+CLUSTER_NAME=$(kubectl config view --minify -o jsonpath='{.clusters[0].name}')
+CLUSTER_SERVER=$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')
+CLUSTER_CA=$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.certificate-authority-data}')
 
-if [[ -z "$namespace" ]]; then
-  echo "Usage: $(basename "$0") NAMESPACE"
+# Ensure the namespace exists
+if ! kubectl get namespace ${NAMESPACE} > /dev/null 2>&1; then
+  kubectl create namespace ${NAMESPACE}
+else
+  echo "Namespace ${NAMESPACE} already exists"
+fi
+
+# Create private key and CSR
+openssl genrsa -out ${USERNAME}.key 2048
+openssl req -new -key ${USERNAME}.key -out ${USERNAME}.csr -subj "/CN=${USERNAME}"
+
+# Create CertificateSigningRequest
+CSR_BASE64=$(cat ${USERNAME}.csr | base64 | tr -d "\n")
+cat <<EOF | kubectl apply -f -
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: ${USERNAME}
+spec:
+  request: ${CSR_BASE64}
+  signerName: kubernetes.io/kube-apiserver-client
+  expirationSeconds: 86400  # one day
+  usages:
+  - client auth
+EOF
+
+# Approve the CSR
+kubectl certificate approve ${USERNAME}
+
+# Wait for the certificate to be issued
+for i in {1..10}; do
+  CERT=$(kubectl get csr ${USERNAME} -o jsonpath='{.status.certificate}' 2>/dev/null)
+  if [[ ! -z "$CERT" ]]; then
+    break
+  fi
+  sleep 2
+done
+
+if [[ -z "$CERT" ]]; then
+  echo "Error: Failed to retrieve the certificate for CSR ${USERNAME}."
   exit 1
 fi
 
-# Create ServiceAccount, Role, and RoleBinding
-echo -e "
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: ${namespace}-user
-  namespace: $namespace
-automountServiceAccountToken: true
----
+# Decode and save the certificate
+echo "${CERT}" | base64 --decode > ${USERNAME}.crt
+
+# Create Role with permissions
+cat <<EOF | kubectl apply -f -
+apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
-apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: ${namespace}-user-full-access
-  namespace: $namespace
+  namespace: ${NAMESPACE}
+  name: ${USERNAME}-role
 rules:
-- apiGroups: ['', 'extensions', 'apps']
-  resources: ['*']
-  verbs: ['*']
-- apiGroups: ['batch']
-  resources:
-  - jobs
-  - cronjobs
-  verbs: ['*']
----
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: ${namespace}-user-view
-  namespace: $namespace
-subjects:
-- kind: ServiceAccount
-  name: ${namespace}-user
-  namespace: $namespace
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: ${namespace}-user-full-access" | kubectl apply -f -
+- apiGroups: [""]
+  resources: ["pods", "pods/log", "services", "endpoints", "persistentvolumeclaims"]
+  verbs: ["get", "watch", "list", "create", "update", "delete"]
+EOF
 
-# Wait for the ServiceAccount secret to be created
-sleep 15
+# Create RoleBinding
+kubectl create rolebinding ${USERNAME}-rolebinding --role=${USERNAME}-role --user=${USERNAME} --namespace=${NAMESPACE}
 
-# Get the secret name
-tokenName=$(kubectl get sa ${namespace}-user -n $namespace -o 'jsonpath={.secrets[0].name}')
-if [[ -z "$tokenName" ]]; then
-  echo "Error: Could not find secret for ServiceAccount ${namespace}-user"
-  exit 1
-fi
+# Create kubeconfig for the new user
+kubectl config set-credentials ${USERNAME} --client-key=${USERNAME}.key --client-certificate=${USERNAME}.crt --embed-certs=true
+kubectl config set-context ${USERNAME}-context --cluster=${CLUSTER_NAME} --namespace=${NAMESPACE} --user=${USERNAME}
 
-echo "Token Name: $tokenName"
-
-# Get the token
-token=$(kubectl get secret $tokenName -n $namespace -o "jsonpath={.data.token}" | base64 --decode)
-
-if [[ -z "$token" ]]; then
-  echo "Error: Could not retrieve token"
-  exit 1
-fi
-
-echo "Token: $token"
-
-# Get current context, cluster name, and server name
-context_name=$(kubectl config current-context)
-cluster_name=$(kubectl config view -o "jsonpath={.contexts[?(@.name==\"${context_name}\")].context.cluster}")
-server_name=$(kubectl config view -o "jsonpath={.clusters[?(@.name==\"${cluster_name}\")].cluster.server}")
-certificate_authority_data=$(kubectl config view --raw -o "jsonpath={.clusters[?(@.name==\"${cluster_name}\")].cluster.certificate-authority-data}")
-
-if [[ -z "$context_name" || -z "$cluster_name" || -z "$server_name" || -z "$certificate_authority_data" ]]; then
-  echo "Error: Could not retrieve cluster information"
-  exit 1
-fi
-
-echo "Context Name: $context_name"
-echo "Cluster Name: $cluster_name"
-echo "Server Name: $server_name"
-echo "Certificate Authority Data: $certificate_authority_data"
-
-# Create the kubeconfig file
-echo -e "apiVersion: v1
+cat <<EOF > ${USERNAME}-kubeconfig
+apiVersion: v1
 kind: Config
-preferences: {}
 clusters:
 - cluster:
-    certificate-authority-data: $certificate_authority_data
-    server: $server_name
-  name: ${cluster_name}
-users:
-- name: ${namespace}-user
-  user:
-    token: $token
+    certificate-authority-data: ${CLUSTER_CA}
+    server: ${CLUSTER_SERVER}
+  name: ${CLUSTER_NAME}
 contexts:
 - context:
-    cluster: ${cluster_name}
-    namespace: ${namespace}
-    user: ${namespace}-user
-  name: $namespace
-current-context: $namespace" > ${namespace}_kubeconfig
+    cluster: ${CLUSTER_NAME}
+    namespace: ${NAMESPACE}
+    user: ${USERNAME}
+  name: ${USERNAME}-context
+current-context: ${USERNAME}-context
+preferences: {}
+users:
+- name: ${USERNAME}
+  user:
+    client-certificate-data: $(cat ${USERNAME}.crt | base64 | tr -d "\n")
+    client-key-data: $(cat ${USERNAME}.key | base64 | tr -d "\n")
+EOF
 
-echo "${namespace}-user's kubeconfig was created at $(pwd)/${namespace}_kubeconfig"
+echo "Kubeconfig file for user ${USERNAME} has been created: ${USERNAME}-kubeconfig"
