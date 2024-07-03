@@ -173,7 +173,7 @@ stuX@vm001:~$ sudo bash -c 'chown -R jedi:jedi /home/jedi/quota_test_jedi.yaml'
 
 stuX@vm001:~$ sudo su - jedi
 
-jedi@vm001:~$ kubectl apply -f quota_test_jedi.yaml
+jedi@vm001:~$ kubectl apply -f quota_test_jedi.yaml --namespace jedins
 
 *check the pods / deployments 
 
