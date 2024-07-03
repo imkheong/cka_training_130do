@@ -86,18 +86,8 @@
 1. **Task 1: Create a Role** 
    - **Command**: Create a Role named `read-pods` in the `rbac-demo` namespace with permission to list pods.
 
-     ```yaml
-     cat <<EOF | kubectl apply -f -
-     apiVersion: rbac.authorization.k8s.io/v1
-     kind: Role
-     metadata:
-       namespace: rbac-demo
-       name: read-pods
-     rules:
-     - apiGroups: [""]
-       resources: ["pods"]
-       verbs: ["get", "list"]
-     EOF
+     ```sh 
+    kubectl apply -f read-pods-role-yaml
      ```
 
    - **Verify**: Ensure the Role is created.
@@ -122,44 +112,8 @@
      kubectl describe rolebinding read-pods-binding -n rbac-demo
      ```
 
-3. **Task 3: Create a ClusterRole** 
-   - **Command**: Create a ClusterRole named `view-secrets` with permission to get, list, and watch secrets across the cluster.
 
-     ```yaml
-     cat <<EOF | kubectl apply -f -
-     apiVersion: rbac.authorization.k8s.io/v1
-     kind: ClusterRole
-     metadata:
-       name: view-secrets
-     rules:
-     - apiGroups: [""]
-       resources: ["secrets"]
-       verbs: ["get", "list", "watch"]
-     EOF
-     ```
-
-   - **Verify**: Ensure the ClusterRole is created.
-
-     ```sh
-     kubectl get clusterroles
-     kubectl describe clusterrole view-secrets
-     ```
-
-4. **Task 4: Create a ClusterRoleBinding** 
-   - **Command**: Create a ClusterRoleBinding named `view-secrets-binding` that binds the `view-secrets` role to the `pod-reader` service account.
-
-     ```sh
-     kubectl create clusterrolebinding view-secrets-binding --clusterrole=view-secrets --serviceaccount=rbac-demo:pod-reader
-     ```
-
-   - **Verify**: Ensure the ClusterRoleBinding is created.
-
-     ```sh
-     kubectl get clusterrolebindings
-     kubectl describe clusterrolebinding view-secrets-binding
-     ```
-
-5. **Task 5: Test Access** 
+3. **Task 3: Test Access** 
    - **Command**: Switch context to the `pod-reader` service account and test access.
 
      ```sh
