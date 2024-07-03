@@ -1,5 +1,5 @@
 # Lab12A
-# Step 
+# Step 1
 Limiting resources available to a pods/containers
 ```sh
 
@@ -83,63 +83,20 @@ kubectl get pod
 kubectl describe pod kubia-manual
 
 ```
-# Lab12B
-# Step 1
- * Configure vm001 VM to access Kubernetes Cluster ( install az cli & kubectl )
- * Perform this on Azure Cloud shell ( private key to access vm001 only available on Azure Cloud Shell )
-
- >> WARNING: SKIP THIS IF YOU ARE NOT USING AZURE AKS!!! ( SKIP to Step 1A)
-
-```sh 
-
-# @Azure:~$  VMIP=$(az vm show -d -g vm001_rg -n vm001 --query "publicIps" -o tsv)
-
-# @Azure:~$  ssh -i .ssh/id_rsa droot@${VMIP}
-
-# droot@vm001:~$ sudo apt install azure-cli -y 
-
-# droot@vm001:~$ sudo apt-get update
-
-# droot@vm001:~$ sudo apt-get install -y apt-transport-https ca-certificates curl git
-
-# droot@vm001:~$ sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-
-# droot@vm001:~$ echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-
-# droot@vm001:~$ sudo apt-get update
-
-# droot@vm001:~$ sudo apt-get install -y kubectl
-
-# droot@vm001:~$ kubectl version
-
-# droot@vm001:~$ az login
-To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code XXXXXXX to authenticate.
-
- * open the link on the browser where you have Azure logged in to Authenticate vm001 to access Azure Access and insert the code 
-
-# droot@vm001:~$  az account set --subscription $(az account list | grep id | awk '{print $2}'  | sed 's/"//g' | sed 's/,//g')
-
-# droot@vm001:~$  az aks get-credentials --resource-group aks_rg --name aks_lab
-
-```
-
-# Step 1A
-```sh 
-# droot@vm001:~$ kubectl cluster-info 
-* You should receive Cluster Info Output
-
-# droot@vm001:~$ sudo adduser jedi 
-**use any password and leave blank for any other field 
-
-# droot@vm001:~$ sudo adduser sith 
-**use any password and leave blank for any other field 
-
-# droot@vm001:~$ tail -n2 /etc/passwd
-
-```
 
 # Step 2A
+
+* Create User Called jedi in your Linux system 
+
 ```sh 
+
+sudo adduser jedi
+* use any password and leave all other fields blank 
+
+```
+
+```sh 
+
 sudo bash -c 'mkdir /home/jedi/.kube/'
 
 sudo bash -c 'cat /home/stux/.kube/config > /home/jedi/.kube/config'
@@ -150,32 +107,37 @@ sudo chown jedi:jedi /home/jedi/kcsr.yaml
 
 sudo su - jedi 
 
-kubectl cluster-info
+jedi@vm000:~$ kubectl cluster-info
 
-openssl genrsa -out jedi.key 2048
+jedi@vm000:~$ openssl genrsa -out jedi.key 2048
 
-openssl req -new -key jedi.key -out jedi.csr -subj "/CN=jedi"
+jedi@vm000:~$ openssl req -new -key jedi.key -out jedi.csr -subj "/CN=jedi"
 
-cat jedi.csr | base64 | tr -d "\n"
+jedi@vm000:~$cat jedi.csr | base64 | tr -d "\n"
 * copy the base64 into REPLACE ME in kcsr.yaml
 
-kubectl apply -f kcsr.yaml 
+jedi@vm000:~$ kubectl apply -f kcsr.yaml 
 
-kubectl get csr
+jedi@vm000:~$ kubectl get csr
 
-kubectl certificate approve jedi
+jedi@vm000:~$ kubectl certificate approve jedi
 
-kubectl get csr jedi -o jsonpath='{.status.certificate}'| base64 -d > jedi.crt
+jedi@vm000:~$ kubectl get csr jedi -o jsonpath='{.status.certificate}'| base64 -d > jedi.crt
 
-kubectl create role jedidev --namespace=jedi --verb=create --verb=get --verb=list --verb=update --verb=delete --resource=pods
+jedi@vm000:~$ kubectl create role jedidev --namespace=jedins --verb=create --verb=get --verb=list --verb=update --verb=delete --resource=pods
 
-kubectl create rolebinding jedidev-binding-jedi --role=jedi-dev --user=jedi
+jedi@vm000:~$ kubectl create rolebinding jedidev-binding-jedi --role=jedi-dev --user=jedi
 
-kubectl config set-credentials jedi --client-key=jedi.key --client-certificate=jedi.crt --embed-certs=true
+jedi@vm000:~$ kubectl config set-credentials jedi --client-key=jedi.key --client-certificate=jedi.crt --embed-certs=true
 
-kubectl config set-context jedi --cluster=(REPLACE WITH CLUSTER NAME)--user=jedi
+jedi@vm000:~$ kubectl config set-context jedi --cluster=(REPLACE WITH CLUSTER NAME)--user=jedi
 
-kubectl config use-context jedi
+jedi@vm000:~$ kubectl config use-context jedi
+
+jedi@vm000:~$ kubectl get pods 
+* you will be forbidden
+
+jedi@vm000:~$ kubectl get pods -n jedi 
 
 ```
 
@@ -186,53 +148,27 @@ kubectl config use-context jedi
 
 
 
-# Step 2 ( UPDATE : PROBLEM )
- * Create namespace for user Jedi and Sith and Apply Resource Quota 
+# Step 2B ( UPDATE )
+ * Create namespace for user Jedi  Apply Resource Quota 
 
 ```sh
 ** Create Namespace 
-# droot@vm001:~/$ kubectl create namespace jedi
-
-# droot@vm001:~/$ kubectl create namespace sith
-
-
-* run create_user_namespace.sh to generate kubeconfig 
-
-# droot@vm001:~$ bash create_user_namespace.sh jedi
-# droot@vm001:~$ bash create_user_namespace.sh sith
-
+# stuX@vm001:~/$ kubectl create namespace jedi
 
 * create hard limit quota
-# droot@vm001:~$ kubectl apply -f quota-pod_jedi.yaml --namespace=jedi 
-
-# droot@vm001:~$ kubectl apply -f quota-pod_sith.yaml --namespace=sith
-
-
-
-* copy the config file to home dir of each 
-# droot@vm001:~$ sudo cp jedi_kubeconfig   ~jedi
-
-# droot@vm001:~$ sudo cp sith_kubeconfig   ~sith
+# stuX@vm001:~$ kubectl apply -f quota-pod_jedi.yaml --namespace=jedins 
 
 
 * copy quota_test_jedi.yaml to jedi user $HOME
-# droot@vm001:~$ sudo cp quota_test_jedi.yaml  ~jedi
+# stuX@vm001:~$ sudo cp quota_test_jedi.yaml  ~jedi
 
-* copy quota_test_sith.yaml to sith user $HOME
-# droot@vm001:~$ sudo cp quota_test_sith.yaml  ~sith
 
 
 * update Access
 
-# droot@vm001:~$ sudo bash -c 'chown -R jedi:jedi /home/jedi/*'
+# stuX@vm001:~$ sudo bash -c 'chown -R jedi:jedi /home/jedi/quota_test_jedi.yaml'
 
-# droot@vm001:~$ sudo bash -c 'chown -R jedi:jedi /home/sith/*'
-
-# droot@vm001:~$ sudo su - jedi
-
-# jedi@vm001:~$ echo "export KUBECONFIG=/home/jedi/jedi_kubeconfig"  >> ~jedi/.bashrc 
-
-# jedi@vm001:~$ source .bashrc
+# stuX@vm001:~$ sudo su - jedi
 
 # jedi@vm001:~$ kubectl apply -f quota_test_jedi.yaml
 
@@ -245,49 +181,24 @@ kubectl config use-context jedi
 # jedi@vm001:~$ exit
 
 
-# droot@vm001:~$ sudo su - sith
 
-# sith@vm001:~$ echo "export KUBECONFIG=/home/sith/sith_kubeconfig"  >> ~sith/.bashrc 
+# stuX@vm001:~/$ kubectl  apply -f limits2.yaml
 
-# sith@vm001:~$  source .bashrc
+# stuX@vm001:~$ sudo su - jedi
 
-# sith@vm001:~$  kubectl apply -f quota_test_sith.yaml
+# jedi@vm001:~$ kubectl get pods
 
-*check the pods / deployments 
+# jedi@vm001:~$ kubectl  get deployments
 
-# sith@vm001:~$ kubectl describe resourcequotas sith-quota
+# jedi@vm001:~$ kubectl describe limitranges
 
-# sith@vm001:~$ kubectl  get pods
+# jedi@vm001:~$ kubectl  apply -f quota_test_jedi.yaml
 
-# sith@vm001:~$ kubectl  get deployments
+# jedi@vm001:~$ jedi@vm001:~$ kubectl describe resourcequotas jedi-quota
 
-# sith@vm001:~$ kubectl describe deployments pod-quota-demos
+# jedi@vm001:~$ kubectl  get deployments 
 
-# sith@vm001:~$ kubectl get events
-
-# sith@vm001:~$ exit
-
-# droot@vm001:~/kubernetes_training/k-labs/lab12$ kubectl  apply -f limits2.yaml
-
-# droot@vm001:~$ sudo su - sith
-
-# sith@vm001:~$ kubectl get pods
-
-# sith@vm001:~$ kubectl  get deployments
-
-# sith@vm001:~$ kubectl describe limitranges
-
-# sith@vm001:~$ kubectl delete -f quota_test_sith.yaml
-
-# sith@vm001:~$ kubectl  get deployments 
-
-# sith@vm001:~$ kubectl  apply -f quota_test_sith.yaml
-
-# sith@vm001:~$ sith@vm001:~$ kubectl describe resourcequotas sith-quota
-
-# sith@vm001:~$ kubectl  get deployments 
-
-# sith@vm001:~$ kubectl get pods
+# jedi@vm001:~$ kubectl get pods
 
 # exit
 
@@ -295,13 +206,12 @@ kubectl config use-context jedi
 
 # FINAL STEP 
 
->> WARNING: Delete user jedi and sith from linux host, linux host are exposed to internet!! 
+>> WARNING: Delete user jedi from linux host, linux host are exposed to internet!! 
 
 ```sh 
 
 sudo userdel -r jedi 
 
-sudo userdel -r sith 
 ```
 
 
