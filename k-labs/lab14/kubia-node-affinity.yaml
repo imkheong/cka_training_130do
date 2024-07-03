@@ -25,5 +25,5 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - NODE2
+                - NODE
                 #Update the NODE2 with your actual nodename of node 2 

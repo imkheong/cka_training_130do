@@ -86,6 +86,8 @@ kubectl describe pod kubia-manual
 
 # Step 2A
 
+* In the exercise, open 2 terminal. 
+
 * Create User Called jedi in your Linux system and Namespace called jedins
 
 ```sh 
@@ -93,21 +95,25 @@ kubectl describe pod kubia-manual
 sudo adduser jedi
 * use any password and leave all other fields blank 
 
-
-kubectl create namespace jedi
+kubectl create namespace jedins
+* our namespace will be jedins
 ```
 
 ```sh 
 
-sudo bash -c 'mkdir /home/jedi/.kube/'
+stuX@vm001:~$ sudo bash -c 'mkdir /home/jedi/.kube/'
 
-sudo bash -c 'cat /home/stux/.kube/config > /home/jedi/.kube/config'
+stuX@vm001:~$ sudo bash -c 'cat /home/stux/.kube/config > /home/jedi/.kube/config'
 
-sudo cp kcsr.yaml /home/jedi/
+stuX@vm001:~$ sudo chown jedi:jedi /home/jedi/.kube/
 
-sudo chown jedi:jedi /home/jedi/kcsr.yaml 
+stuX@vm001:~$ sudo chown jedi:jedi /home/jedi/.kube/config
 
-sudo su - jedi 
+stuX@vm001:~$ sudo cp kcsr.yaml /home/jedi/
+
+stuX@vm001:~$ sudo chown jedi:jedi /home/jedi/kcsr.yaml 
+
+stuX@vm001:~$ sudo su - jedi 
 
 jedi@vm000:~$ kubectl cluster-info
 
@@ -115,8 +121,11 @@ jedi@vm000:~$ openssl genrsa -out jedi.key 2048
 
 jedi@vm000:~$ openssl req -new -key jedi.key -out jedi.csr -subj "/CN=jedi"
 
-jedi@vm000:~$cat jedi.csr | base64 | tr -d "\n"
-* copy the base64 into REPLACE ME in kcsr.yaml
+jedi@vm000:~$ cat jedi.csr | base64 | tr -d "\n"
+* copy the base64 into "REPLACE ME" in kcsr.yaml
+
+* you will able to perform cluster admin task such as creating roles & rolebinding, as user jedi, because user jedi have admin kubeconfig
+* in real environment, everything is done by admin and admin will configure and pass kubeconfig to regular user
 
 jedi@vm000:~$ kubectl apply -f kcsr.yaml 
 
@@ -126,13 +135,14 @@ jedi@vm000:~$ kubectl certificate approve jedi
 
 jedi@vm000:~$ kubectl get csr jedi -o jsonpath='{.status.certificate}'| base64 -d > jedi.crt
 
-jedi@vm000:~$ kubectl create role jedidev --namespace=jedins --verb=create --verb=get --verb=list --verb=update --verb=delete --resource=pods
+jedi@vm000:~$ kubectl create role jedidev --namespace=jedins --verb=create --verb=get --verb=list --verb=update --verb=delete --resource=pods,deployments,replicasets
 
-jedi@vm000:~$ kubectl create rolebinding jedidev-binding-jedi --role=jedi-dev --user=jedi
+jedi@vm000:~$ kubectl create rolebinding jedidev-binding-jedi --role=jedidev --user=jedi
 
 jedi@vm000:~$ kubectl config set-credentials jedi --client-key=jedi.key --client-certificate=jedi.crt --embed-certs=true
 
-jedi@vm000:~$ kubectl config set-context jedi --cluster=(REPLACE WITH CLUSTER NAME)--user=jedi
+jedi@vm000:~$ kubectl config set-context jedi --cluster=(REPLACE WITH CLUSTER NAME) --user=jedi
+* you can use kubectl config view to retrieve CLuster Name
 
 jedi@vm000:~$ kubectl config use-context jedi
 
@@ -143,64 +153,61 @@ jedi@vm000:~$ kubectl get pods -n jedi
 
 ```
 
-
-
-
-
-
-
-
 # Step 2B ( UPDATE )
  * Apply jedi Resource Quota 
 
 ```sh
 
 * create hard limit quota
-# stuX@vm001:~$ kubectl apply -f quota-pod_jedi.yaml --namespace=jedins 
+stuX@vm001:~$ kubectl apply -f quota-pod_jedi.yaml --namespace=jedins 
 
 
 * copy quota_test_jedi.yaml to jedi user $HOME
-# stuX@vm001:~$ sudo cp quota_test_jedi.yaml  ~jedi
+stuX@vm001:~$ sudo cp quota_test_jedi.yaml  ~jedi
 
 
 
 * update Access
 
-# stuX@vm001:~$ sudo bash -c 'chown -R jedi:jedi /home/jedi/quota_test_jedi.yaml'
+stuX@vm001:~$ sudo bash -c 'chown -R jedi:jedi /home/jedi/quota_test_jedi.yaml'
 
-# stuX@vm001:~$ sudo su - jedi
+stuX@vm001:~$ sudo su - jedi
 
-# jedi@vm001:~$ kubectl apply -f quota_test_jedi.yaml
+jedi@vm001:~$ kubectl apply -f quota_test_jedi.yaml
 
 *check the pods / deployments 
 
-# jedi@vm001:~$ kubectl describe resourcequotas jedi-quota
+jedi@vm001:~$ kubectl describe resourcequotas jedi-quota
 
-# jedi@vm001:~$ kubectl get pods 
+jedi@vm001:~$ kubectl get pods 
 
-# jedi@vm001:~$ exit
+jedi@vm001:~$ exit
 
 
 
-# stuX@vm001:~/$ kubectl  apply -f limits2.yaml
+stuX@vm001:~$ kubectl  apply -f limits2.yaml
 
-# stuX@vm001:~$ sudo su - jedi
+stuX@vm001:~$ sudo su - jedi
 
-# jedi@vm001:~$ kubectl get pods
+jedi@vm001:~$ kubectl get pods
 
-# jedi@vm001:~$ kubectl  get deployments
+jedi@vm001:~$ kubectl  get deployments
 
-# jedi@vm001:~$ kubectl describe limitranges
+jedi@vm001:~$ kubectl describe limitranges
 
-# jedi@vm001:~$ kubectl  apply -f quota_test_jedi.yaml
+jedi@vm001:~$ kubectl  apply -f quota_test_jedi.yaml
 
-# jedi@vm001:~$ jedi@vm001:~$ kubectl describe resourcequotas jedi-quota
+jedi@vm001:~$ kubectl describe resourcequotas jedi-quota
 
-# jedi@vm001:~$ kubectl  get deployments 
+jedi@vm001:~$ kubectl  get deployments 
 
-# jedi@vm001:~$ kubectl get pods
+jedi@vm001:~$ kubectl get pods
 
-# exit
+jedi@vm001:~$ exit 
+
+stuX@vm001:~$ kubectl get events -n jedins 
+
+exit
 
 ```
 
@@ -208,11 +215,10 @@ jedi@vm000:~$ kubectl get pods -n jedi
 
 >> WARNING: Delete user jedi from linux host, linux host are exposed to internet!! 
 
-```sh 
+```sh
 
-sudo userdel -r jedi 
+sudo userdel -r jedi
 
 ```
-
 
 END
