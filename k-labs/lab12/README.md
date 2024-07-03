@@ -177,9 +177,11 @@ jedi@vm001:~$ kubectl apply -f quota_test_jedi.yaml --namespace jedins
 
 *check the pods / deployments 
 
-jedi@vm001:~$ kubectl describe resourcequotas jedi-quota
+jedi@vm001:~$ kubectl describe resourcequotas jedi-quota --namespace jedins
 
-jedi@vm001:~$ kubectl get pods 
+jedi@vm001:~$ kubectl get pods --namespace jedins
+
+jedi@vm001:~$ kubectl get deployments --namespace jedins
 
 jedi@vm001:~$ exit
 
