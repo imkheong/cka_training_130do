@@ -1,6 +1,6 @@
-# Lab 15
+# Lab 15B
 
-# Step 5
+# Step 1
 Create pod with security context (runasuser/group) and verify the pod user/group context 
 
 ```sh
@@ -30,7 +30,7 @@ seccon1:/data/test$ exit
 kubectl delete -f seccon1.yaml 
 ```
 
-# Step 6
+# Step 2
 Create pod with security context for pod level and container level and verify the pod user/group context 
 
 ```sh
@@ -79,7 +79,7 @@ kubectl delete -f seccon2.yaml
 
 ```
 
-# Step 7
+# Step 3
 Verify securityContext Linux Kernel capabilities ( drop all )
 
 ```sh
@@ -118,7 +118,7 @@ kubectl exec -it seccon3 -- sh
 ```
 
 
-# Step 8
+# Step 4
 Verify securityContext Linux Kernel capabilities ( allow limited )
 
 ```sh
@@ -150,7 +150,7 @@ kubectl exec -it seccon4 -- sh
 
 ```
 
-# Step 9
+# Step 5
 Delete/Remove pods
 
 ```sh
@@ -158,85 +158,4 @@ Delete/Remove pods
 ** Delete all pod to prepare for next lab
 
 ```
-
-# Step 10 
-If time permits, you may continue to extra lab 
-
-```sh 
-Proceed to lab02-extra if time permits 
-```
-
-
-
-# Step 
-
-
-
-```sh
-
-```
-
-# Step 
-
-
-```sh
-
-```
-
-# Step 
-
-
-```sh
-
-```
-
-# Step 
-
-```sh
-
-```
-
-# Step
-
-```sh
-
-
-```
-
-# Step
-
-
-```sh
-
-```
-
-# Step
-
-```sh
-
-```
-
-# Step
-
-
-```sh
-
-```
-
-
-
-# Step
-
-```sh
-
-```
-
-# Step
-
-
-
-```sh
-
-```
-
 END

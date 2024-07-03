@@ -9,7 +9,6 @@
 #### Steps:
 
 1. **Setup**
-   - Ensure all students can access their Digital Ocean Kubernetes cluster.
    - Verify admin access and basic cluster status.
 
 2. **Task 1: Explore Existing Roles**
