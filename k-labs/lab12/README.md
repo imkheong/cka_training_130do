@@ -137,6 +137,8 @@ jedi@vm000:~$ kubectl get csr jedi -o jsonpath='{.status.certificate}'| base64 -
 
 jedi@vm000:~$ kubectl create role jedidev --namespace=jedins --verb=create --verb=get --verb=list --verb=update --verb=delete --resource=pods,deployments,replicasets
 
+jedi@vm000:~$ kubectl get roles.rbac.authorization.k8s.io -n jedins
+
 jedi@vm000:~$ kubectl create rolebinding jedidev-binding-jedi --role=jedidev --user=jedi --namespace jedins
 
 jedi@vm000:~$ kubectl config set-credentials jedi --client-key=jedi.key --client-certificate=jedi.crt --embed-certs=true
