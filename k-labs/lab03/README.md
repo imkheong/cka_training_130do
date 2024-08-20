@@ -201,7 +201,7 @@ kubectl get pod -n app2
 kubectl get svc -n app2
 ```
 # Step 6 
-* Edit the app1-ingress.yaml and add your dns entry 
+* Edit the app2-ingress.yaml and add your dns entry 
 * Change this entry : - host: app2stux.cognitoz.my  ( x represent your student number )
 
 # Step 7 
