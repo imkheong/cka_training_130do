@@ -87,7 +87,7 @@
    - **Command**: Create a Role named `read-pods` in the `rbac-demo` namespace with permission to list pods.
 
      ```sh 
-    kubectl apply -f read-pods-role-yaml
+     kubectl apply -f read-pods-role-yaml
      ```
 
    - **Verify**: Ensure the Role is created.
